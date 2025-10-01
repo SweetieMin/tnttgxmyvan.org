@@ -52,14 +52,12 @@ class Login extends Component
                 ->delete();
 
             Session::forget('login_attempts_' . $this->login_id);
-            sleep(1);
             return redirect()->intended(route('admin.dashboard'));
         }
 
         $this->handleFailedLogin($fieldType);
 
         return redirect()->route('admin.login')
-            ->withInput()
             ->with('fail', 'Đăng nhập thất bại! Vui lòng thử lại.');
     }
 

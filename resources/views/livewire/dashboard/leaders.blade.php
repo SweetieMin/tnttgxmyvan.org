@@ -57,7 +57,7 @@
                 <div class="d-flex flex-wrap">
                     <div class="widget-data">
                         <a href="javascript:;" wire:click='showTransactionDetails()'>
-                            <div class="weight-700 font-24 text-dark">{{ $currentBalance }}</div>
+                            <div class="weight-700 font-24 text-dark">************đ</div>
                             <div class="d-flex align-items-center">
                                 <div class="font-14 text-secondary weight-500">Tiền Quỹ</div>
                                 <div wire:loading wire:target="showTransactionDetails" class="ml-2">
@@ -233,11 +233,14 @@
                     <div class="table-responsive">
 
                         <div class="row">
-                            <div class="col-md-6">
-                                <h5 class="text-success"> Tổng thu: {{ $totalIncome }} </h5>
+                            <div class="col-md-4">
+                                <h5 class="text-success"> Thu: {{ $totalIncome }} </h5>
                             </div>
-                            <div class="col-md-6">
-                                <h5 class="text-danger"> Tổng Chi: {{ $totalExpense }} </h5>
+                            <div class="col-md-4">
+                                <h5 class="text-danger"> Chi: {{ $totalExpense }} </h5>
+                            </div>
+                            <div class="col-md-4">
+                                <h5 class="text-secondary"> Tổng: {{ $currentBalance }} </h5>
                             </div>
                         </div>
 
