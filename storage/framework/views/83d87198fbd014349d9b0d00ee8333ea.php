@@ -6,35 +6,32 @@
                 <div class="clearfix mt-2">
                     <div class="pull-left">
                         <div class="h4 text-blue">
-                            Thiếu Nhi - Quản lý Thiếu Nhi trong xứ Đoàn
+                            Huynh-Dự-Đội Trưởng - Quản lý Thiếu Nhi trong xứ Đoàn
                         </div>
-                        <!-- spell-check: enable -->
                     </div>
                     <div class="pull-right">
-                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('create', App\Models\User::class)): ?>
-                            <a href="javascript:;" wire:click="addChild()" class="btn btn-primary btn-sm mr-2">
-                                Thêm Thiếu Nhi
-                            </a>
-                        <?php endif; ?>
+                        <a href="javascript:;" wire:click="addScouter()" class="btn btn-primary btn-sm mr-2">
+                            Thêm HDĐ Trưởng
+                        </a>
                     </div>
                 </div>
 
                 <div class="row mt-4">
                     <div class="col-md-4 form-group">
-                        <input type="text" class="form-control search-input outline-primary"
-                            placeholder="Tìm tên/ Mã tài khoản" id="search" wire:model.live="search">
+                        <input type="text" class="form-control search-input outline-primary" placeholder="Tìm tên"
+                            id="search" wire:model.live="search">
                     </div>
 
                     <div wire:ignore class="col-md-4 form-group">
-                        <select class="selectpicker form-control" id="course" data-size="5"
-                            data-style="btn-outline-secondary" wire:model="course" data-actions-box="true"
-                            data-live-search-placeholder="Tìm kiếm lớp GL..."
-                            data-none-results-text="Không tìm thấy lớp GL" data-none-selected-text="Chọn cấp"
+                        <select class="selectpicker form-control" id="role" data-size="5"
+                            data-style="btn-outline-secondary" data-actions-box="true"
+                            data-live-search-placeholder="Tìm kiếm chức vụ..."
+                            data-none-results-text="Không tìm thấy chức vụ" data-none-selected-text="Chọn chức vụ"
                             data-select-all-text="Chọn tất cả" data-deselect-all-text="Bỏ tất cả" multiple>
-                            <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $listCourses; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $listCourse): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                                <option value="<?php echo e($listCourse->id); ?>"><?php echo e($listCourse->name); ?></option>
+                            <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $listRoles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $listRole): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                <option value="<?php echo e($listRole->id); ?>"><?php echo e($listRole->name); ?></option>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                                <option value="">Không có lớp giáo lý</option>
+                                <option value="">Không có chức vụ</option>
                             <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                         </select>
                     </div>
@@ -42,7 +39,7 @@
                     <!-- Dropdown for selecting Sector -->
                     <div wire:ignore class="col-md-4 form-group">
                         <select class="selectpicker form-control" id="sector" data-size="5"
-                            data-style="btn-outline-secondary" wire:model="sector" data-actions-box="true"
+                            data-style="btn-outline-secondary" data-actions-box="true"
                             data-live-search-placeholder="Tìm kiếm cấp..." data-none-results-text="Không tìm thấy cấp"
                             data-none-selected-text="Chọn cấp" data-select-all-text="Chọn tất cả"
                             data-deselect-all-text="Bỏ tất cả" multiple>
@@ -54,43 +51,39 @@
                         </select>
                     </div>
                 </div>
-
-                <div class="table-responsive mt-1" style="min-height: 180px">
-                    <table class="table table-bordered table-hover">
-                        <thead class="bg-primary text-white">
-                            <tr>
-                                <th class="text-center">STT</th>
-                                <th class="text-center d-none d-lg-table-cell">Mã tài khoản</th>
-                                <th class="text-center">Hình đại diện</th>
-                                <th class="text-center d-none d-lg-table-cell">Tên thánh</th>
-                                <th class="text-center">Họ và tên</th>
-                                <th class="text-center">Lớp giáo lý</th>
-                                <th class="text-center d-none d-md-table-cell">Ngành</th>
-                                <th class="text-center">Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $listChildren; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $child): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                <div wire:loading.class="opacity-50" wire:target="page">
+                    <div class="table-responsive mt-4">
+                        <table class="table table-bordered table-hover">
+                            <thead class="bg-primary text-white">
                                 <tr>
-                                    <td class="text-center">
-                                        <?php echo e(($listChildren->currentPage() - 1) * $listChildren->perPage() + $loop->iteration); ?>
+                                    <th class="text-center">STT</th>
+                                    <th class="text-center d-none d-lg-table-cell">Mã tài khoản</th>
+                                    <th class="text-center">Hình đại diện</th>
+                                    <th class="text-center">Họ và tên</th>
+                                    <th class="text-center d-none d-md-table-cell">Chức vụ</th>
+                                    <th class="text-center">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $listScouters; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $Scouter): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                    <tr>
+                                        <td class="text-center">
+                                            <?php echo e(($listScouters->currentPage() - 1) * $listScouters->perPage() + $loop->iteration); ?>
 
-                                    </td>
-                                    <td class="text-center d-none d-lg-table-cell"><?php echo e($child->account_code); ?></td>
-                                    <td class="text-center">
-                                        <img src="<?php echo e($child->picture); ?>" alt="Ảnh đại diện của <?php echo e($child->SimpleName); ?>"
-                                            class="img-fluid rounded-circle"
-                                            style="max-width: 50px; max-height: 50px; object-fit: cover;">
-                                    </td>
-                                    <td class="text-center d-none d-lg-table-cell"><?php echo e($child->holyName); ?></td>
-                                    <td class="text-center"><?php echo e($child->SimpleName); ?></td>
-                                    <td class="text-center"><?php echo e($child->courses->pluck('name')->implode(', ')); ?></td>
-                                    <td class="text-center d-none d-md-table-cell">
-                                        <?php echo e($child->sectors->pluck('name')->implode(', ')); ?></td>
+                                        </td>
+                                        <td class="text-center d-none d-lg-table-cell"><?php echo e($Scouter->account_code); ?></td>
+                                        <td class="text-center">
+                                            <img src="<?php echo e($Scouter->picture); ?>"
+                                                alt="Ảnh đại diện của <?php echo e($Scouter->SimpleName); ?>"
+                                                class="img-fluid rounded-circle"
+                                                style="max-width: 50px; max-height: 50px; object-fit: cover;">
+                                        </td>
+                                        <td class="text-center"><?php echo e($Scouter->SimpleName); ?></td>
+                                        <td class="text-center d-none d-md-table-cell">
+                                            <?php echo e($Scouter->roles->pluck('name')->implode(', ')); ?>
 
-
-                                    <td class="text-center">
-                                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('update', $child)): ?>
+                                            <?php echo e($Scouter->sectors->pluck('name')->implode(', ')); ?></td>
+                                        <td class="text-center">
                                             <div class="dropdown">
                                                 <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle"
                                                     href="#" role="button" data-toggle="dropdown">
@@ -98,60 +91,60 @@
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
                                                     <a class="dropdown-item" href="javascript:;"
-                                                        wire:click="editChild(<?php echo e($child->id); ?>)">
+                                                        wire:click="editScouter(<?php echo e($Scouter->id); ?>)">
                                                         <i class="dw dw-edit2"></i> Chỉnh sửa
                                                     </a>
                                                     <a class="dropdown-item" href="javascript:;"
-                                                        wire:click="resetPasswordChild(<?php echo e($child->id); ?>)">
+                                                        wire:click="resetPasswordScouter(<?php echo e($Scouter->id); ?>)">
                                                         <i class="fa fa-repeat"></i> Đặt lại Password
                                                     </a>
                                                     <a class="dropdown-item" href="javascript:;"
-                                                        wire:click="updateAvatar(<?php echo e($child->id); ?>)">
+                                                        wire:click="updateAvatar(<?php echo e($Scouter->id); ?>)">
                                                         <i class="bi bi-file-image"></i> Cài đặt Avatar
                                                     </a>
 
-                                                    <!--[if BLOCK]><![endif]--><?php if($child->hasCustomPicture()): ?>
+
+                                                    <!--[if BLOCK]><![endif]--><?php if($Scouter->hasCustomPicture()): ?>
                                                         <a class="dropdown-item" href="javascript:;"
-                                                            wire:click="screenShot(<?php echo e($child->id); ?>)">
+                                                            wire:click="screenShot(<?php echo e($Scouter->id); ?>)">
                                                             <i class="bi bi-person-badge"></i> Xuất QR
                                                         </a>
                                                     <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
-                                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('delete', $child)): ?>
-                                                        <a class="dropdown-item text-danger" href="javascript:;"
-                                                            wire:click="deleteChild(<?php echo e($child->id); ?>)">
-                                                            <i class="dw dw-delete-3"></i> Xóa
-                                                        </a>
-                                                    <?php endif; ?>
+
+                                                    <a class="dropdown-item text-danger" href="javascript:;"
+                                                        wire:click="deleteScouter(<?php echo e($Scouter->id); ?>)">
+                                                        <i class="dw dw-delete-3"></i> Xóa
+                                                    </a>
                                                 </div>
                                             </div>
-                                        <?php endif; ?>
-                                    </td>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                                    <tr>
+                                        <td colspan="7" class="text-center">Không có dữ liệu</td>
+                                    </tr>
+                                <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="d-block mt-1 text-center">
+                        <?php echo e($listScouters->links('livewire::bootstrap')); ?>
 
-                                </tr>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                                <tr>
-                                    <td colspan="7" class="text-center">Không có dữ liệu</td>
-                                </tr>
-                            <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
-                        </tbody>
-                    </table>
-                </div>
-                <div class="d-block mt-1 text-center">
-                    <?php echo e($listChildren->links('livewire::bootstrap')); ?>
-
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- spell-check: disable -->
-    <div wire:ignore.self class="modal fade " id="children_modal" tabindex="-1" aria-labelledby="myLargeModalLabel1"
+
+    
+    <div wire:ignore.self class="modal fade " id="scouter_modal" tabindex="-1" aria-labelledby="myLargeModalLabel1"
         data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <form class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myLargeModalLabel">
-                        <?php echo e($isUpdateChild ? 'Cập nhật Thiếu Nhi' : 'Thêm Thiếu Nhi'); ?>
+                        <?php echo e($isUpdateScouter ? 'Cập nhật HDĐ Trưởng' : 'Thêm HDĐ Trưởng'); ?>
 
                     </h4>
                     <button type="button" class="close" data-dismiss="modal">
@@ -159,21 +152,22 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!--[if BLOCK]><![endif]--><?php if($isUpdateChild): ?>
-                        <input type="hidden" wire:model="child_id">
+                    <!--[if BLOCK]><![endif]--><?php if($isUpdateScouter): ?>
+                        <input type="hidden" wire:model="scouter_id">
                     <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+
                     <h5 class="h5"> 1. Thông tin cá nhân</h5>
                     <hr>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="child_birthday"><strong>Ngày sinh <span class="text-danger"> *</span>
+                                <label for="scouter_birthday"><strong>Ngày sinh <span class="text-danger"> *</span>
                                         <small>(dd/mm/yyyy)</small></strong>
                                 </label>
-                                <input type="date" class="form-control" id="child_birthday"
-                                    wire:model="child_birthday" wire:change="generateAccountCode" autocomplete="off"
-                                    <?php echo e($isUpdateChild ? 'disabled' : ''); ?>>
-                                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['child_birthday'];
+                                <input type="date" class="form-control" id="scouter_birthday"
+                                    wire:model="scouter_birthday" wire:change="generateAccountCode"
+                                    autocomplete="off" <?php echo e($isUpdateScouter ? 'disabled' : ''); ?>>
+                                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['scouter_birthday'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -190,22 +184,23 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="child_account_code" class="d-block"><strong>Mã tài khoản</strong></label>
+                                <label for="scouter_account_code" class="d-block"><strong>Mã tài
+                                        khoản</strong></label>
                                 <input type="text" class="form-control text-center font-weight-bold"
-                                    id="child_account_code" wire:model="child_account_code" autocomplete="off"
+                                    id="scouter_account_code" wire:model="scouter_account_code" autocomplete="off"
                                     disabled style="font-size: 19px;">
                             </div>
                         </div>
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="child_holy_name"><strong>Tên Thánh <span class="text-danger">
+                                <label for="scouter_holy_name"><strong>Tên Thánh <span class="text-danger">
                                             *</span></strong>
                                 </label>
-                                <input type="text" class="form-control" id="child_holy_name"
-                                    wire:model="child_holy_name" wire:change="generateAccountCode"
+                                <input type="text" class="form-control" id="scouter_holy_name"
+                                    wire:model="scouter_holy_name" wire:change="generateAccountCode"
                                     oninput="this.value = this.value.replace(/(^|\s)\S/g, char => char.toLocaleUpperCase())">
-                                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['child_holy_name'];
+                                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['scouter_holy_name'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -222,13 +217,13 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                         </div>
                         <div class="col-md-8">
                             <div class="form-group">
-                                <label for="child_full_name"><strong>Họ và tên <span class="text-danger">
+                                <label for="scouter_full_name"><strong>Họ và tên <span class="text-danger">
                                             *</span></strong>
                                 </label>
-                                <input type="text" class="form-control" id="child_full_name"
-                                    wire:model="child_full_name" wire:change="generateAccountCode"
+                                <input type="text" class="form-control" id="scouter_full_name"
+                                    wire:model="scouter_full_name" wire:change="generateAccountCode"
                                     oninput="this.value = this.value.replace(/(^|\s)\S/g, char => char.toLocaleUpperCase())">
-                                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['child_full_name'];
+                                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['scouter_full_name'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -246,10 +241,10 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="child_phone"><strong>Số điện thoại</strong></label>
-                                <input type="tel" class="form-control" id="child_phone"
-                                    wire:model="child_phone">
-                                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['child_phone'];
+                                <label for="scouter_phone"><strong>Số điện thoại</strong></label>
+                                <input type="tel" class="form-control" id="scouter_phone"
+                                    wire:model="scouter_phone">
+                                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['scouter_phone'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -267,13 +262,13 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
 
                         <div class="col-md-8">
                             <div class="form-group">
-                                <label for="child_address"><strong>Địa chỉ <span class="text-danger">
+                                <label for="scouter_address"><strong>Địa chỉ <span class="text-danger">
                                             *</span></strong><small> (Giáo khu)</small>
                                 </label>
-                                <input type="text" class="form-control" id="child_address"
-                                    wire:model="child_address"
+                                <input type="text" class="form-control" id="scouter_address"
+                                    wire:model="scouter_address"
                                     oninput="this.value = this.value.replace(/(^|\s)\S/g, char => char.toLocaleUpperCase())">
-                                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['child_address'];
+                                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['scouter_address'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -291,31 +286,30 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
 
                         <div class="col-md-6">
                             <div wire:ignore class="form-group">
-                                <label for="courseModal"><strong>Lớp giáo lý<span class="text-danger">
+                                <label for="roleModal"><strong>Chức vụ<span class="text-danger">
                                             *</span></strong>
                                 </label>
-                                <select class="selectpicker form-control" id="courseModal" data-size="5"
-                                    data-style="btn-outline-primary" wire:model="courseModal"
-                                    data-live-search="true">
-                                    <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $listCourses; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $Course): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                                        <option value="<?php echo e($Course->id); ?>">
-                                            <?php echo e($Course->name); ?>
+                                <select class="selectpicker form-control" id="roleModal" data-size="5"
+                                    data-style="btn-outline-primary" wire:model="roleModal" data-live-search="true">
+                                    <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $listRoles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $role): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                        <option value="<?php echo e($role->id); ?>">
+                                            <?php echo e($role->name); ?>
 
                                         </option>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                                        <option value="">Không có lớp giáo lý</option>
+                                        <option value="">Không có chức vụ</option>
                                     <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                                 </select>
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <div id="showSector" class="col-md-6 d-none">
                             <div wire:ignore class="form-group">
                                 <label for="sectorModal"><strong>Ngành<span class="text-danger"> *</span></strong>
                                 </label>
                                 <select class="selectpicker form-control" id="sectorModal" data-size="5"
-                                    data-style="btn-outline-primary" wire:model="sectorModal"
-                                    data-live-search="true">
+                                    data-style="btn-outline-primary" wire:model="sectorModal" data-live-search="true"
+                                    data-actions-box="true"> 
                                     <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $listSectors; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $Sector): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                         <option value="<?php echo e($Sector->id); ?>">
                                             <?php echo e($Sector->name); ?>
@@ -325,32 +319,35 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                                         <option value="">Không có ngành</option>
                                     <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                                 </select>
+
+                                <div id="msgSectorModal" class="d-none">
+                                    <span class="text-danger ml-1">Vui lòng chọn ngành.</span>
+                                </div>
+
                             </div>
                         </div>
-
                     </div>
 
-                    <hr>
                     <h5 class="h5"> 2. Thông tin phụ huynh</h5>
                     <hr>
                     <div class="row">
                         <div class="col-md-8">
                             <div class="form-group">
-                                <label for="child_father_name"><strong>Tên Thánh - Họ và tên cha </strong>
+                                <label for="scouter_father_name"><strong>Tên Thánh - Họ và tên cha </strong>
                                 </label>
-                                <input type="text" class="form-control" id="child_father_name"
-                                    wire:model="child_father_name"
+                                <input type="text" class="form-control" id="scouter_father_name"
+                                    wire:model="scouter_father_name"
                                     oninput="this.value = this.value.replace(/(^|\s)\S/g, char => char.toLocaleUpperCase())">
                             </div>
                         </div>
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="child_father_phone"><strong>Số điện thoại</strong>
+                                <label for="scouter_father_phone"><strong>Số điện thoại</strong>
                                 </label>
-                                <input type="tel" class="form-control" id="child_father_phone"
-                                    wire:model="child_father_phone">
-                                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['child_father_phone'];
+                                <input type="tel" class="form-control" id="scouter_father_phone"
+                                    wire:model="scouter_father_phone">
+                                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['scouter_father_phone'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -369,21 +366,21 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
 
                         <div class="col-md-8">
                             <div class="form-group">
-                                <label for="child_mother_name"><strong>Tên Thánh - Họ và tên mẹ </strong>
+                                <label for="scouter_mother_name"><strong>Tên Thánh - Họ và tên mẹ </strong>
                                 </label>
-                                <input type="text" class="form-control" id="child_mother_name"
-                                    wire:model="child_mother_name"
+                                <input type="text" class="form-control" id="scouter_mother_name"
+                                    wire:model="scouter_mother_name"
                                     oninput="this.value = this.value.replace(/(^|\s)\S/g, char => char.toLocaleUpperCase())">
                             </div>
                         </div>
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="child_mother_phone"><strong>Số điện thoại</strong>
+                                <label for="scouter_mother_phone"><strong>Số điện thoại</strong>
                                 </label>
-                                <input type="tel" class="form-control" id="child_mother_phone"
-                                    wire:model="child_mother_phone">
-                                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['child_mother_phone'];
+                                <input type="tel" class="form-control" id="scouter_mother_phone"
+                                    wire:model="scouter_mother_phone">
+                                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['scouter_mother_phone'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -401,16 +398,16 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
 
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label for="child_godParent_name"><strong>Tên Thánh - Họ và tên cha mẹ đỡ đầu </strong>
+                                <label for="scouter_godParent_name"><strong>Tên Thánh - Họ và tên cha mẹ đỡ đầu
+                                    </strong>
                                 </label>
-                                <input type="text" class="form-control" id="child_godParent_name"
-                                    wire:model="child_godParent_name"
+                                <input type="text" class="form-control" id="scouter_godParent_name"
+                                    wire:model="scouter_godParent_name"
                                     oninput="this.value = this.value.replace(/(^|\s)\S/g, char => char.toLocaleUpperCase())">
                             </div>
                         </div>
 
                     </div>
-
 
                     <hr>
                     <h5 class="h5"> 3. Thông tin công giáo</h5>
@@ -464,11 +461,9 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                             </div>
                         </div>
 
-
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="ngay_xung_toi"><strong>Ngày Xưng Tội<span class="text-danger">
-                                            *</span></strong>
+                                <label for="ngay_xung_toi"><strong>Ngày Xưng Tội</strong>
                                 </label>
                                 <input type="date" class="form-control" id="ngay_xung_toi"
                                     wire:model="ngay_xung_toi">
@@ -519,17 +514,73 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
 
                         <div class="col-md-8">
                             <div wire:ignore class="form-group">
-                                <label for="trang_thai"><strong>Trạng thái</strong>
+                                <label for="trang_thai_ton_giao"><strong>Trạng thái</strong>
                                 </label>
-                                <select class="selectpicker form-control" id="trang_thai" data-size="5"
-                                    data-style="btn-outline-primary" wire:model="trang_thai" data-live-search="true">
-                                    <option value="active">Hoạt động</option>
-                                    <option value="inactive">Ngưng hoạt động</option>
+                                <select class="selectpicker form-control" id="trang_thai_ton_giao" data-size="5"
+                                    data-style="btn-outline-primary" wire:model="trang_thai_ton_giao"
+                                    data-live-search="true">
+                                    <option value="Đang học">Đang học</option>
+                                    <option value="Đã nghỉ">Đã nghỉ</option>
+                                    <option value="Đã tốt nghiệp">Đã tốt nghiệp</option>
                                 </select>
                             </div>
                         </div>
 
                     </div>
+
+                    <hr>
+                    <h5 class="h5"> 4. Hành trình dấn thân</h5>
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="ngay_doi_truong"><strong>Ngày Tham gia Đội Trưởng</strong>
+                                </label>
+                                <input type="date" class="form-control" id="ngay_doi_truong"
+                                    wire:model="ngay_doi_truong">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="ngay_du_truong"><strong>Ngày Tham gia Dự Trưởng</strong>
+                                </label>
+                                <input type="date" class="form-control" id="ngay_du_truong"
+                                    wire:model="ngay_du_truong">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="ngay_huynh_truong"><strong>Ngày Tham gia Huynh Trưởng</strong>
+                                </label>
+                                <input type="date" class="form-control" id="ngay_huynh_truong"
+                                    wire:model="ngay_huynh_truong">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="ngay_huynh_truong2"><strong>Ngày Tham gia Huynh Trưởng <span
+                                            class="text-danger">2*</span></strong>
+                                </label>
+                                <input type="date" class="form-control" id="ngay_huynh_truong2"
+                                    wire:model="ngay_huynh_truong2">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="ngay_huynh_truong3"><strong>Ngày Tham gia Huynh Trưởng <span
+                                            class="text-danger">3*</span></strong>
+                                </label>
+                                <input type="date" class="form-control" id="ngay_huynh_truong3"
+                                    wire:model="ngay_huynh_truong3">
+                            </div>
+                        </div>
+                    </div>
+
 
                 </div>
                 <div class="modal-footer">
@@ -537,7 +588,7 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                         Đóng
                     </button>
                     <button type="submit"
-                        class="btn btn-primary"><?php echo e($isUpdateChild ? 'Lưu thay đổi' : 'Thêm mới'); ?></button>
+                        class="btn btn-primary"><?php echo e($isUpdateScouter ? 'Lưu thay đổi' : 'Thêm mới'); ?></button>
                 </div>
 
             </form>
@@ -546,7 +597,7 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
     
 
     
-    <div class="modal fade " id="children_avatar" tabindex="-1" aria-labelledby="myLargeModalLabel1"
+    <div class="modal fade " id="scouter_avatar" tabindex="-1" aria-labelledby="myLargeModalLabel1"
         data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
             <form class="modal-content">
@@ -559,21 +610,21 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                     </button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" value="<?php echo e($child_id_avatarModal); ?>" id="child_id">
+                    <input type="hidden" value="<?php echo e($scouter_id_avatarModal); ?>" id="scouter_id">
                     <div class="profile-photo">
                         <a href="javascript:;"
                             onclick="event.preventDefault();document.getElementById('profilePictureFile').click();"
                             class="edit-avatar"><i class="fa fa-pencil"></i></a>
-                        <img src="<?php echo e($child_picture); ?>" alt="Avatar <?php echo e($child_full_name); ?>"
+                        <img src="<?php echo e($scouter_picture); ?>" alt="Avatar <?php echo e($scouter_full_name); ?>"
                             class="avatar-photo img-fluid rounded-circle" id="profilePicturePreview">
                         <input type="file" name="profilePictureFile" id="profilePictureFile" class="d-none"
                             style="opacity: 0">
                     </div>
-                    <h5 class="text-center h5 mb-0"><?php echo e($child_holy_name); ?></h5>
-                    <h5 class="text-center h5 mb-0"><?php echo e($child_full_name); ?></h5>
+                    <h5 class="text-center h5 mb-0"><?php echo e($scouter_holy_name); ?></h5>
+                    <h5 class="text-center h3 mb-0"><?php echo e($scouter_full_name); ?></h5>
                     <div class="profile-info d-flex justify-content-center flex-grow-1">
                         <div class="mt-2">
-                            <?php echo \SimpleSoftwareIO\QrCode\Facades\QrCode::size(200)->generate(url('/profile/' . $child_token)); ?>
+                            <?php echo \SimpleSoftwareIO\QrCode\Facades\QrCode::size(200)->generate(url('/profile/' . $scouter_token)); ?>
 
                         </div>
                     </div>
@@ -583,13 +634,13 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
     </div>
     
 
-    <div class="modal fade" id="child_card" tabindex="-1" aria-labelledby="myLargeModalLabel1">
+    <div class="modal fade" id="scouter_card" tabindex="-1" aria-labelledby="myLargeModalLabel1">
         <div class="modal-dialog modal-sm modal-dialog-centered">
             <div class="card-preview">
-                <?php echo \SimpleSoftwareIO\QrCode\Facades\QrCode::size(200)->generate(url('/profile/' . $child_token_card)); ?>
+                <?php echo \SimpleSoftwareIO\QrCode\Facades\QrCode::size(200)->generate(url('/profile/' . $scouter_token_card)); ?>
 
             </div>
         </div>
     </div>
 </div>
-<?php /**PATH /Users/smyth/Herd/tnttgxmyvan.org/resources/views/livewire/personnel/children.blade.php ENDPATH**/ ?>
+<?php /**PATH /Users/smyth/Herd/tnttgxmyvan.org/resources/views/livewire/personnel/scouters.blade.php ENDPATH**/ ?>

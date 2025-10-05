@@ -17,10 +17,12 @@ use Livewire\WithPagination;
 //use App\Exports\PersonalInfo\ListTotalThieuNhiExport;
 use App\Exports\Scores\ScoreScouterExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class Children extends Component
 {
     use WithPagination;
+    use AuthorizesRequests;
     public $course, $sector;
     public $courseModal, $sectorModal;
     public $child_id_avatarModal;
@@ -169,6 +171,7 @@ class Children extends Component
 
     public function addChild()
     {
+        $this->authorize('create', Children::class);
         $this->isUpdateChild = false;
         $this->dispatch('showChildModal');
         $this->resetModal();
@@ -246,6 +249,7 @@ class Children extends Component
     public function updateAvatar($id)
     {
         $child = User::find($id);
+        $this->authorize('update', $child);
         $this->child_picture = $child->picture;
         $this->child_holy_name = $child->holyName;
         $this->child_full_name = $child->SimpleName;
@@ -329,6 +333,8 @@ class Children extends Component
         $this->resetModal();
         $child = User::with(['courses', 'sectors', 'studentParent', 'religiousProfile'])->find($id);
 
+        $this->authorize('update', $child);
+
         $this->child_id = $child->id;
         $this->isUpdateChild = true;
         $this->child_holy_name = $child->holyName;
@@ -375,6 +381,7 @@ class Children extends Component
     public function deleteChild($id)
     {
         $child = User::find($id);
+        $this->authorize('delete', $child);
         $this->dispatch('deleteChildren', ['id' => $child->id, 'name' => $child->SimpleName]);
     }
 
@@ -467,6 +474,7 @@ class Children extends Component
     public function resetPasswordChild($id)
     {
         $child = User::find($id);
+        $this->authorize('update', $child);
         $this->dispatch('resetPasswordChildren', ['id' => $child->id, 'name' => $child->SimpleName]);
     }
 
@@ -543,6 +551,8 @@ class Children extends Component
     {
         $roleName = $user->roles->first()?->name ?? '';
 
+        $sector = $user->sectors->first()?->name ?? "";
+        
         $sectorMap = [
             'Trưởng Ngành Thiếu' => 'Thiếu%',
             'Phó Ngành Thiếu' => 'Thiếu%',
@@ -562,6 +572,9 @@ class Children extends Component
             $this->managerSector = Sector::where('name', 'LIKE', $sectorMap[$roleName])
                 ->orderBy('ordering')
                 ->get();
+        }else{
+            $this->managerSector = Sector::where('name', 'LIKE', $sector)
+                ->get();
         }
 
         return [
@@ -573,6 +586,7 @@ class Children extends Component
     public function screenShot($id)
     {
         $child = User::findOrFail($id);
+        $this->authorize('update', $child);
         $this->child_picture_card = $child->picture;
         $this->child_full_name_card = $child->SimpleName;
         $this->child_holy_name_card = $child->holyName;

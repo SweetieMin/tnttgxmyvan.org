@@ -40,6 +40,7 @@
     36 => 'Spatie\\Sitemap\\SitemapServiceProvider',
     37 => 'Yajra\\DataTables\\DataTablesServiceProvider',
     38 => 'App\\Providers\\AppServiceProvider',
+    39 => 'App\\Providers\\AuthServiceProvider',
   ),
   'eager' => 
   array (
@@ -66,6 +67,7 @@
     20 => 'Spatie\\Sitemap\\SitemapServiceProvider',
     21 => 'Yajra\\DataTables\\DataTablesServiceProvider',
     22 => 'App\\Providers\\AppServiceProvider',
+    23 => 'App\\Providers\\AuthServiceProvider',
   ),
   'deferred' => 
   array (

@@ -11,9 +11,11 @@
                         <!-- spell-check: enable -->
                     </div>
                     <div class="pull-right">
-                        <a href="javascript:;" wire:click="addChild()" class="btn btn-primary btn-sm mr-2">
-                            Thêm Thiếu Nhi
-                        </a>
+                        @can('create', App\Models\User::class)
+                            <a href="javascript:;" wire:click="addChild()" class="btn btn-primary btn-sm mr-2">
+                                Thêm Thiếu Nhi
+                            </a>
+                        @endcan
                     </div>
                 </div>
 
@@ -25,8 +27,8 @@
 
                     <div wire:ignore class="col-md-4 form-group">
                         <select class="selectpicker form-control" id="course" data-size="5"
-                            data-style="btn-outline-secondary" wire:model="course"
-                            data-actions-box="true" data-live-search-placeholder="Tìm kiếm lớp GL..."
+                            data-style="btn-outline-secondary" wire:model="course" data-actions-box="true"
+                            data-live-search-placeholder="Tìm kiếm lớp GL..."
                             data-none-results-text="Không tìm thấy lớp GL" data-none-selected-text="Chọn cấp"
                             data-select-all-text="Chọn tất cả" data-deselect-all-text="Bỏ tất cả" multiple>
                             @forelse ($listCourses as $listCourse)
@@ -40,10 +42,10 @@
                     <!-- Dropdown for selecting Sector -->
                     <div wire:ignore class="col-md-4 form-group">
                         <select class="selectpicker form-control" id="sector" data-size="5"
-                            data-style="btn-outline-secondary" wire:model="sector"
-                            data-actions-box="true" data-live-search-placeholder="Tìm kiếm cấp..."
-                            data-none-results-text="Không tìm thấy cấp" data-none-selected-text="Chọn cấp"
-                            data-select-all-text="Chọn tất cả" data-deselect-all-text="Bỏ tất cả" multiple>
+                            data-style="btn-outline-secondary" wire:model="sector" data-actions-box="true"
+                            data-live-search-placeholder="Tìm kiếm cấp..." data-none-results-text="Không tìm thấy cấp"
+                            data-none-selected-text="Chọn cấp" data-select-all-text="Chọn tất cả"
+                            data-deselect-all-text="Bỏ tất cả" multiple>
                             @forelse ($listSectors as $listSector)
                                 <option value="{{ $listSector->id }}">{{ $listSector->name }}</option>
                             @empty
@@ -84,40 +86,46 @@
                                     <td class="text-center">{{ $child->courses->pluck('name')->implode(', ') }}</td>
                                     <td class="text-center d-none d-md-table-cell">
                                         {{ $child->sectors->pluck('name')->implode(', ') }}</td>
+
+
                                     <td class="text-center">
-                                        <div class="dropdown">
-                                            <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle"
-                                                href="#" role="button" data-toggle="dropdown">
-                                                <i class="dw dw-more"></i>
-                                            </a>
-                                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-                                                <a class="dropdown-item" href="javascript:;"
-                                                    wire:click="editChild({{ $child->id }})">
-                                                    <i class="dw dw-edit2"></i> Chỉnh sửa
+                                        @can('update', $child)
+                                            <div class="dropdown">
+                                                <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle"
+                                                    href="#" role="button" data-toggle="dropdown">
+                                                    <i class="dw dw-more"></i>
                                                 </a>
-                                                <a class="dropdown-item" href="javascript:;"
-                                                    wire:click="resetPasswordChild({{ $child->id }})">
-                                                    <i class="fa fa-repeat"></i> Đặt lại Password
-                                                </a>
-                                                <a class="dropdown-item" href="javascript:;"
-                                                    wire:click="updateAvatar({{ $child->id }})">
-                                                    <i class="bi bi-file-image"></i> Cài đặt Avatar
-                                                </a>
-
-                                                @if ($child->hasCustomPicture())
+                                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
                                                     <a class="dropdown-item" href="javascript:;"
-                                                        wire:click="screenShot({{ $child->id }})">
-                                                        <i class="bi bi-person-badge"></i> Xuất QR
+                                                        wire:click="editChild({{ $child->id }})">
+                                                        <i class="dw dw-edit2"></i> Chỉnh sửa
                                                     </a>
-                                                @endif
+                                                    <a class="dropdown-item" href="javascript:;"
+                                                        wire:click="resetPasswordChild({{ $child->id }})">
+                                                        <i class="fa fa-repeat"></i> Đặt lại Password
+                                                    </a>
+                                                    <a class="dropdown-item" href="javascript:;"
+                                                        wire:click="updateAvatar({{ $child->id }})">
+                                                        <i class="bi bi-file-image"></i> Cài đặt Avatar
+                                                    </a>
 
-                                                <a class="dropdown-item text-danger" href="javascript:;"
-                                                    wire:click="deleteChild({{ $child->id }})">
-                                                    <i class="dw dw-delete-3"></i> Xóa
-                                                </a>
+                                                    @if ($child->hasCustomPicture())
+                                                        <a class="dropdown-item" href="javascript:;"
+                                                            wire:click="screenShot({{ $child->id }})">
+                                                            <i class="bi bi-person-badge"></i> Xuất QR
+                                                        </a>
+                                                    @endif
+                                                    @can('delete', $child)
+                                                        <a class="dropdown-item text-danger" href="javascript:;"
+                                                            wire:click="deleteChild({{ $child->id }})">
+                                                            <i class="dw dw-delete-3"></i> Xóa
+                                                        </a>
+                                                    @endCan
+                                                </div>
                                             </div>
-                                        </div>
+                                        @endCan
                                     </td>
+
                                 </tr>
                             @empty
                                 <tr>
@@ -135,8 +143,8 @@
     </div>
     {{-- Kết thúc Bảng hiện danh sách thiếu nhi --}}
     <!-- spell-check: disable -->
-    <div wire:ignore.self class="modal fade " id="children_modal" tabindex="-1"
-        aria-labelledby="myLargeModalLabel1" data-backdrop="static" data-keyboard="false">
+    <div wire:ignore.self class="modal fade " id="children_modal" tabindex="-1" aria-labelledby="myLargeModalLabel1"
+        data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <form class="modal-content">
                 <div class="modal-header">
@@ -429,8 +437,7 @@
                                 <label for="trang_thai"><strong>Trạng thái</strong>
                                 </label>
                                 <select class="selectpicker form-control" id="trang_thai" data-size="5"
-                                    data-style="btn-outline-primary" wire:model="trang_thai"
-                                    data-live-search="true">
+                                    data-style="btn-outline-primary" wire:model="trang_thai" data-live-search="true">
                                     <option value="active">Hoạt động</option>
                                     <option value="inactive">Ngưng hoạt động</option>
                                 </select>
