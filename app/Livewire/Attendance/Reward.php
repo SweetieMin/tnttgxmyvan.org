@@ -65,8 +65,23 @@ class Reward extends Component
 
         DB::beginTransaction();
         try {
+            $exists = Attendance::where('user_id', $this->user_id)
+                ->where('status', '1')
+                ->where('isConfirm', '0')
+                ->whereDate('created_at', today())
+                ->lockForUpdate()
+                ->exists();
+
+            if ($exists) {
+                DB::rollBack();
+                $this->dispatchError('Người này đã được điểm danh hôm nay');
+                $this->dispatch('continueScan');
+                return;
+            }
+
             Attendance::create($data);
             DB::commit();
+
             $this->dispatchSuccess('Điểm danh thành công.');
             $this->hideProfile();
             $this->dispatch('continueScan');
@@ -75,6 +90,7 @@ class Reward extends Component
             $this->dispatchError('Có lỗi xảy ra khi cập nhật điểm danh.');
         }
     }
+
 
     public function hideProfile()
     {

@@ -8,10 +8,11 @@
                 <nav aria-label="breadcrumb" role="navigation">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
-                            <a href="{{ route('admin.dashboard') }}">Trang chủ</a>
+                            <a href="<?php echo e(route('admin.dashboard')); ?>">Trang chủ</a>
                         </li>
                         <li class="breadcrumb-item active" aria-current="page">
-                            {{ $attendance_name }}
+                            <?php echo e($attendance_name); ?>
+
                         </li>
                     </ol>
                 </nav>
@@ -22,7 +23,7 @@
         <div class="col-md-12">
             <div class="pd-20 card-box mb-30 text-center">
                 <!-- Nút quét -->
-                @if ($isAttendanceOpen)
+                <!--[if BLOCK]><![endif]--><?php if($isAttendanceOpen): ?>
                     <div class="d-flex flex-column flex-md-row justify-content-center gap-2 mb-3">
                         <button id="start-scan-btn" class="btn btn-primary">Bắt đầu quét</button>
                         <button id="stop-scan-btn" class="btn btn-danger" style="display:none;">Dừng quét</button>
@@ -30,18 +31,18 @@
 
                     <!-- Vùng quét QR -->
                     <div id="reader" class="mx-auto" style="width: 100%; max-width: 400px; height: auto;"></div>
-                @else
-                    <div class="text-danger">{{ $msgAttendance }}</div>
-                @endif
+                <?php else: ?>
+                    <div class="text-danger"><?php echo e($msgAttendance); ?></div>
+                <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
 
             </div>
         </div>
-        @if ($isAttendanceOpen)
+        <!--[if BLOCK]><![endif]--><?php if($isAttendanceOpen): ?>
             <div class="col-md-12">
                 <div class="pd-20 card-box mb-30">
                     <h4 class="h4">Danh sách điểm danh hôm nay <small><span class="text-danger" id="attendance-msg"
-                                style="font-size: smaller;">{{ $msgAttendance }}</span></small></h4>
+                                style="font-size: smaller;"><?php echo e($msgAttendance); ?></span></small></h4>
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <thead>
@@ -50,43 +51,51 @@
                                     <th class="text-center">Họ và tên</th>
                                     <th class="text-center">Ngành</th>
                                     <th class="text-center">Điểm danh bởi</th>
+                                    <th class="text-center">Hạng mục</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($listUser as $item)
+                                <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $listUser; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                     <tr>
-                                        <td class="text-center">{{ $loop->iteration }}</td>
-                                        <td>{{ $item->user->SimpleName }}</td>
+                                        <td class="text-center"><?php echo e($loop->iteration); ?></td>
+                                        <td><?php echo e($item->user->SimpleName); ?></td>
                                         <td class="text-center">
-                                            @php
+                                            <?php
                                                 $roleName = $item->user?->roles->first()?->name;
                                                 $sectorName = $item->user?->sectors->first()?->name;
-                                            @endphp
+                                            ?>
 
-                                            @if ($sectorName)
-                                                {{ $roleName }} - {{ $sectorName }}
-                                            @else
-                                                {{ $roleName ?? 'Không rõ' }}
-                                            @endif
+                                            <!--[if BLOCK]><![endif]--><?php if($sectorName): ?>
+                                                <?php echo e($roleName); ?> - <?php echo e($sectorName); ?>
+
+                                            <?php else: ?>
+                                                <?php echo e($roleName ?? 'Không rõ'); ?>
+
+                                            <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                                         </td>
 
 
                                         <td class="text-center">
-                                            {{ $item->submittedBy->SimpleName ?? 'Không xác định' }}
+                                            <?php echo e($item->submittedBy->SimpleName ?? 'Không xác định'); ?>
+
                                         </td>
 
+                                        <td class="text-center">
+                                            <?php echo e($schedule_name); ?>
+
+                                        </td>
                                     </tr>
-                                @empty
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                     <tr>
                                         <td colspan="5" class="text-center">Không có dữ liệu</td>
                                     </tr>
-                                @endforelse
+                                <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-        @endif
+        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
     </div>
 
 
@@ -116,7 +125,8 @@
                             <div class="form-group">
                                 <label for="user_holy">Tên Thánh</label>
                                 <div id="user_holy" class="border p-2 rounded bg-light">
-                                    {{ $user_holy }}
+                                    <?php echo e($user_holy); ?>
+
                                 </div>
                             </div>
                         </div>
@@ -124,7 +134,8 @@
                             <div class="form-group">
                                 <label for="user_name">Họ và tên</label>
                                 <div id="user_name" class="border p-2 rounded bg-light">
-                                    {{ $user_name }}
+                                    <?php echo e($user_name); ?>
+
                                 </div>
                             </div>
                         </div>
@@ -133,7 +144,8 @@
                             <div class="form-group">
                                 <label for="user_sector">Ngành</label>
                                 <div id="user_sector" class="border p-2 rounded bg-light">
-                                    {{ $user_sector }}
+                                    <?php echo e($user_sector); ?>
+
                                 </div>
                             </div>
                         </div>
@@ -166,3 +178,4 @@
         </div>
     </div>
 </div>
+<?php /**PATH /Users/smyth/Herd/tnttgxmyvan.org/resources/views/livewire/attendance/reward.blade.php ENDPATH**/ ?>
