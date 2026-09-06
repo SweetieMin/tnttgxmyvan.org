@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "onepanel-nsyqhidjhosting": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://onehost-amdcloudhn042501.000nethost.com:2023/api/mcp",
+        "--header",
+        "Authorization: Bearer ${ONEPANEL_MCP_TOKEN}"
+      ]
+    }
+  }
+}
