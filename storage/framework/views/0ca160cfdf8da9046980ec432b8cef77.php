@@ -89,9 +89,23 @@
                                     </td>
                                     <td class="text-center align-middle"><?php echo e($child->account_code); ?></td>
                                     <td class="text-center align-middle">
-                                        <img src="<?php echo e($child->picture); ?>" alt="Ảnh đại diện của <?php echo e($child->SimpleName); ?>"
-                                            class="img-fluid rounded-circle"
-                                            style="max-width: 50px; max-height: 50px; object-fit: cover;">
+                                        <!--[if BLOCK]><![endif]--><?php if($child->hasCustomPicture() && auth()->user()->can('exportQr', $child)): ?>
+                                            
+                                            <button type="button" class="btn p-0 border-0 bg-transparent"
+                                                title="Nhấn để xem QR"
+                                                wire:click="showQr(<?php echo e($child->id); ?>)"
+                                                wire:loading.attr="disabled"
+                                                wire:target="showQr(<?php echo e($child->id); ?>)">
+                                                <img src="<?php echo e($child->picture); ?>"
+                                                    alt="Ảnh đại diện của <?php echo e($child->SimpleName); ?>"
+                                                    class="img-fluid rounded-circle"
+                                                    style="max-width: 50px; max-height: 50px; object-fit: cover; cursor: pointer;">
+                                            </button>
+                                        <?php else: ?>
+                                            <img src="<?php echo e($child->picture); ?>" alt="Ảnh đại diện của <?php echo e($child->SimpleName); ?>"
+                                                class="img-fluid rounded-circle"
+                                                style="max-width: 50px; max-height: 50px; object-fit: cover;">
+                                        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                                     </td>
                                     <td class="text-center align-middle"><?php echo e($child->holyName); ?></td>
                                     <td class="text-center align-middle"><?php echo e($child->SimpleName); ?></td>
@@ -121,7 +135,7 @@
                                                         <i class="bi bi-file-image"></i> Cài đặt Avatar
                                                     </a>
 
-                                                    <!--[if BLOCK]><![endif]--><?php if($child->hasCustomPicture()): ?>
+                                                    <?php if($child->hasCustomPicture()): ?>
                                                         <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('exportQr', $child)): ?>
                                                             <a class="dropdown-item" href="javascript:;"
                                                                 wire:click="screenShot(<?php echo e($child->id); ?>)">
@@ -156,9 +170,23 @@
                         <div class="card mb-2" wire:key="child-card-<?php echo e($child->id); ?>">
                             <div class="card-body p-3">
                                 <div class="d-flex">
-                                    <img src="<?php echo e($child->picture); ?>" alt="Ảnh đại diện của <?php echo e($child->SimpleName); ?>"
-                                        class="rounded-circle mr-3"
-                                        style="width: 48px; height: 48px; object-fit: cover;">
+                                    <!--[if BLOCK]><![endif]--><?php if($child->hasCustomPicture() && auth()->user()->can('exportQr', $child)): ?>
+                                        
+                                        <button type="button" class="btn p-0 border-0 bg-transparent mr-3 align-self-start"
+                                            title="Nhấn để xem QR"
+                                            wire:click="showQr(<?php echo e($child->id); ?>)"
+                                            wire:loading.attr="disabled"
+                                            wire:target="showQr(<?php echo e($child->id); ?>)">
+                                            <img src="<?php echo e($child->picture); ?>"
+                                                alt="Ảnh đại diện của <?php echo e($child->SimpleName); ?>"
+                                                class="rounded-circle"
+                                                style="width: 48px; height: 48px; object-fit: cover;">
+                                        </button>
+                                    <?php else: ?>
+                                        <img src="<?php echo e($child->picture); ?>" alt="Ảnh đại diện của <?php echo e($child->SimpleName); ?>"
+                                            class="rounded-circle mr-3"
+                                            style="width: 48px; height: 48px; object-fit: cover;">
+                                    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
                                     <div class="flex-grow-1 text-break">
                                         <div class="font-weight-bold">
@@ -191,7 +219,7 @@
                                                     <i class="bi bi-file-image"></i> Cài đặt Avatar
                                                 </a>
 
-                                                <!--[if BLOCK]><![endif]--><?php if($child->hasCustomPicture()): ?>
+                                                <?php if($child->hasCustomPicture()): ?>
                                                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('exportQr', $child)): ?>
                                                         <a class="dropdown-item" href="javascript:;"
                                                             wire:click="screenShot(<?php echo e($child->id); ?>)">
@@ -666,12 +694,28 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
     </div>
     
 
+    
     <div class="modal fade" id="child_card" tabindex="-1" aria-labelledby="myLargeModalLabel1">
         <div class="modal-dialog modal-sm modal-dialog-centered">
             <div class="card-preview">
                 <?php echo \SimpleSoftwareIO\QrCode\Facades\QrCode::size(200)->generate(url('/profile/' . $child_token_card)); ?>
 
             </div>
+        </div>
+    </div>
+
+    
+    <div class="modal fade" id="child_qr_v2" tabindex="-1" aria-labelledby="childQrV2Label">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+           
+                <div class="card-preview">
+                 
+                        <?php echo \SimpleSoftwareIO\QrCode\Facades\QrCode::size(200)->generate(url('/card/' . $child_token_v2_card)); ?>
+
+  
+                </div>
+               
+           
         </div>
     </div>
 </div><?php /**PATH /Users/smyth/Herd/now/resources/views/livewire/personnel/children.blade.php ENDPATH**/ ?>

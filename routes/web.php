@@ -7,6 +7,7 @@ use App\Http\Controllers\Back\ManagementController;
 use App\Http\Controllers\Back\PersonnelController;
 use App\Http\Controllers\Back\SupportController;
 use App\Http\Controllers\Front\ProfileController;
+use App\Http\Controllers\Front\CardController;
 use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,12 @@ Route::get('/generate-sitemap', [SitemapController::class, 'generate']);
 
 Route::controller(ProfileController::class)->group(function () {
     Route::get('/profile/{token}', 'profileView')->name('profile_view');
+});
+
+// Làm thẻ: quét QR token_v2 để xem / xác nhận đã làm thẻ
+Route::controller(CardController::class)->group(function () {
+    Route::get('/card/{token}', 'cardView')->name('card_view');
+    Route::post('/card/{token}/confirm', 'confirmCard')->name('card_confirm');
 });
 
 //Route test

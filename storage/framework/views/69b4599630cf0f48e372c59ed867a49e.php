@@ -335,6 +335,33 @@ if (isset($__slots)) unset($__slots);
             });
         });
 
+        // Nhấn ảnh đại diện: QR theo token_v2 - hiện lên, tải ảnh rồi tắt (giống Xuất QR)
+        window.addEventListener('showChildQr', function(event) {
+            const cardToCapture = document.querySelector('#child_qr_v2 .card-preview');
+
+            $('#child_qr_v2').modal('show');
+
+            $('#child_qr_v2').on('shown.bs.modal', function() {
+                var name = event.detail[0].name;
+                var times = event.detail[0].times;
+
+                html2canvas(cardToCapture, {
+                    allowTaint: true,
+                    useCORS: true,
+                    scale: 2
+                }).then(canvas => {
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = canvas.toDataURL('image/png');
+                    downloadLink.download =  name + '-L' + times + '.png';
+                    downloadLink.click();
+                });
+
+                $('#child_qr_v2').off('shown.bs.modal');
+                $('#child_qr_v2').modal('hide');
+
+            });
+        });
+
         window.addEventListener('showChildCard', function(event) {
             const cardToCapture = document.querySelector('#child_card .card-preview');
 

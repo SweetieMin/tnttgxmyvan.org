@@ -36,6 +36,7 @@ class Children extends Component
     public $ngay_rua_toi, $linh_muc_rua_toi, $ngay_xung_toi, $ngay_them_suc, $giam_muc_them_suc, $ngay_bao_dong, $trang_thai, $ngay_bo_hoc;
 
     public $child_picture_card, $child_full_name_card, $child_holy_name_card, $child_token_card, $child_position_card;
+    public $child_token_v2_card; // QR token_v2 khi nhấn ảnh đại diện
 
     protected $listeners = [
         'chooseDataSort',
@@ -641,6 +642,30 @@ class Children extends Component
         $name = pathinfo($child->getRawOriginal('picture'), PATHINFO_FILENAME) . ' - ' . Str::upper($child->FullName);
 
         $this->dispatch('showChildCard', ['name' => $name, 'times' => $child->reissue_count]);
+    }
+
+    /**
+     * Nhấn ảnh đại diện: hiện mã QR (token_v2), tải ảnh về rồi tắt; tên file giống nút Xuất QR.
+     * Không tăng số lần cấp, không ghi nhật ký.
+     */
+    public function showQr($id)
+    {
+        $child = User::findOrFail($id);
+        $this->authorize('exportQr', $child);
+
+        if (blank($child->token_v2)) {
+            $this->dispatch('showToastr', [
+                'type' => 'error',
+                'message' => 'Tài khoản này chưa có token_v2.',
+            ]);
+            return;
+        }
+
+        $this->child_token_v2_card = $child->token_v2;
+
+        $name = pathinfo($child->getRawOriginal('picture'), PATHINFO_FILENAME) . ' - ' . Str::upper($child->FullName);
+
+        $this->dispatch('showChildQr', ['name' => $name, 'times' => $child->reissue_count]);
     }
 
     public function updatedSearch()

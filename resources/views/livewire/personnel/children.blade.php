@@ -88,9 +88,23 @@
                                     </td>
                                     <td class="text-center align-middle">{{ $child->account_code }}</td>
                                     <td class="text-center align-middle">
-                                        <img src="{{ $child->picture }}" alt="Ảnh đại diện của {{ $child->SimpleName }}"
-                                            class="img-fluid rounded-circle"
-                                            style="max-width: 50px; max-height: 50px; object-fit: cover;">
+                                        @if ($child->hasCustomPicture() && auth()->user()->can('exportQr', $child))
+                                            {{-- Nhấn ảnh đại diện để hiện mã QR (token_v2) --}}
+                                            <button type="button" class="btn p-0 border-0 bg-transparent"
+                                                title="Nhấn để xem QR"
+                                                wire:click="showQr({{ $child->id }})"
+                                                wire:loading.attr="disabled"
+                                                wire:target="showQr({{ $child->id }})">
+                                                <img src="{{ $child->picture }}"
+                                                    alt="Ảnh đại diện của {{ $child->SimpleName }}"
+                                                    class="img-fluid rounded-circle"
+                                                    style="max-width: 50px; max-height: 50px; object-fit: cover; cursor: pointer;">
+                                            </button>
+                                        @else
+                                            <img src="{{ $child->picture }}" alt="Ảnh đại diện của {{ $child->SimpleName }}"
+                                                class="img-fluid rounded-circle"
+                                                style="max-width: 50px; max-height: 50px; object-fit: cover;">
+                                        @endif
                                     </td>
                                     <td class="text-center align-middle">{{ $child->holyName }}</td>
                                     <td class="text-center align-middle">{{ $child->SimpleName }}</td>
@@ -155,9 +169,23 @@
                         <div class="card mb-2" wire:key="child-card-{{ $child->id }}">
                             <div class="card-body p-3">
                                 <div class="d-flex">
-                                    <img src="{{ $child->picture }}" alt="Ảnh đại diện của {{ $child->SimpleName }}"
-                                        class="rounded-circle mr-3"
-                                        style="width: 48px; height: 48px; object-fit: cover;">
+                                    @if ($child->hasCustomPicture() && auth()->user()->can('exportQr', $child))
+                                        {{-- Nhấn ảnh đại diện để hiện mã QR (token_v2) --}}
+                                        <button type="button" class="btn p-0 border-0 bg-transparent mr-3 align-self-start"
+                                            title="Nhấn để xem QR"
+                                            wire:click="showQr({{ $child->id }})"
+                                            wire:loading.attr="disabled"
+                                            wire:target="showQr({{ $child->id }})">
+                                            <img src="{{ $child->picture }}"
+                                                alt="Ảnh đại diện của {{ $child->SimpleName }}"
+                                                class="rounded-circle"
+                                                style="width: 48px; height: 48px; object-fit: cover;">
+                                        </button>
+                                    @else
+                                        <img src="{{ $child->picture }}" alt="Ảnh đại diện của {{ $child->SimpleName }}"
+                                            class="rounded-circle mr-3"
+                                            style="width: 48px; height: 48px; object-fit: cover;">
+                                    @endif
 
                                     <div class="flex-grow-1 text-break">
                                         <div class="font-weight-bold">
@@ -579,11 +607,26 @@
     </div>
     {{-- Kết thúc modal update Avatar --}}
 
+    {{-- Xuất QR (menu): mã theo cột token --}}
     <div class="modal fade" id="child_card" tabindex="-1" aria-labelledby="myLargeModalLabel1">
         <div class="modal-dialog modal-sm modal-dialog-centered">
             <div class="card-preview">
                 {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(200)->generate(url('/profile/' . $child_token_card)) !!}
             </div>
+        </div>
+    </div>
+
+    {{-- Nhấn ảnh đại diện: mã theo cột token_v2, hiện lên rồi tải ảnh về --}}
+    <div class="modal fade" id="child_qr_v2" tabindex="-1" aria-labelledby="childQrV2Label">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+           
+                <div class="card-preview">
+                 
+                        {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(200)->generate(url('/card/' . $child_token_v2_card)) !!}
+  
+                </div>
+               
+           
         </div>
     </div>
 </div>
