@@ -156,6 +156,20 @@
                         </li>
                     @endif
 
+                    @if ($hasRegistrationPermission)
+                        <li>
+                            <a href="{{ route('admin.personnel.registration') }}"
+                                class="dropdown-toggle no-arrow {{ Route::is('admin.personnel.registration') ? 'active' : '' }}"
+                                >
+                                <span class="micon fa fa-id-card"></span><span class="mtext">Đơn đăng ký
+                                    @if ($pendingRegistrations)
+                                        <span class="badge badge-danger ml-1">{{ $pendingRegistrations }}</span>
+                                    @endif
+                                </span>
+                            </a>
+                        </li>
+                    @endif
+
 
                     @if ($isShowManageMenu)
                         <li>

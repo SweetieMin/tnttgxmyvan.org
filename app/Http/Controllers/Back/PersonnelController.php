@@ -30,6 +30,15 @@ class PersonnelController extends Controller
         return view('back.personnel.children', $data);
     }
 
+    public function registrationView()
+    {
+        SeoService::setDefaultSeo('Đơn đăng ký');
+        $data = [
+            'pageTitle' => 'Đơn đăng ký'
+        ];
+        return view('back.personnel.registration', $data);
+    }
+
     /**
      * Tạo token_v2 cho các tài khoản chưa có (cùng kiểu với cột token: chuỗi ngẫu nhiên 64 ký tự).
      * Chỉ điền cho người đang trống nên gọi lại nhiều lần cũng không đổi mã đã có.

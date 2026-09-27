@@ -8,6 +8,7 @@ use App\Http\Controllers\Back\PersonnelController;
 use App\Http\Controllers\Back\SupportController;
 use App\Http\Controllers\Front\ProfileController;
 use App\Http\Controllers\Front\CardController;
+use App\Http\Controllers\Front\RegistrationController;
 use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,9 @@ Route::controller(CardController::class)->group(function () {
     Route::get('/card/{token}', 'cardView')->name('card_view');
     Route::post('/card/{token}/confirm', 'confirmCard')->name('card_confirm');
 });
+
+// Phụ huynh đăng ký thiếu nhi mới / xin cấp lại thẻ / tra cứu hồ sơ
+Route::get('/dang-ky', [RegistrationController::class, 'registerView'])->name('registration');
 
 //Route test
 Route::view('/example-page', 'example-page');
@@ -79,6 +83,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::get('/scouter', 'scouterView')->name('scouter')->middleware('CheckPermission:admin.personnel.scouter'); // huynh trưởng
                 Route::get('/children', 'childrenView')->name('children')->middleware('CheckPermission:admin.personnel.children'); // thiếu nhi
                 Route::get('/token-v2/generate', 'generateTokenV2')->name('token_v2.generate'); // tạo token_v2 (chỉ Admin)
+                Route::get('/registration', 'registrationView')->name('registration')->middleware('CheckPermission:admin.personnel.registration'); // duyệt đơn đăng ký / cấp lại thẻ
             });
         });
         //Management

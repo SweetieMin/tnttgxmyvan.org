@@ -3,6 +3,7 @@
 namespace App\Livewire\Layout;
 
 use Livewire\Component;
+use App\Models\RegistrationRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,6 +28,8 @@ class Sidebars extends Component
 
     public $hasScouterPermission;
     public $hasChildrenPermission;
+    public $hasRegistrationPermission;
+    public $pendingRegistrations = 0;
 
     //Attendance
     public $isShowAttendanceMenu = false;
@@ -59,6 +62,7 @@ class Sidebars extends Component
         //Manage Personnel
         $this->hasScouterPermission = false;
         $this->hasChildrenPermission = false;
+        $this->hasRegistrationPermission = false;
         //Attendance
         $this->hasRewardPermission = false;
         $this->hasConfirmPermission = false;
@@ -107,10 +111,15 @@ class Sidebars extends Component
         //Manage Personnel
         $this->hasScouterPermission = $user->hasPermission('admin.personnel.scouter');
         $this->hasChildrenPermission = $user->hasPermission('admin.personnel.children');
+        $this->hasRegistrationPermission = $user->hasPermission('admin.personnel.registration');
+        if ($this->hasRegistrationPermission) {
+            $this->pendingRegistrations = RegistrationRequest::where('status', 'pending')->count();
+        }
 
         $this->isShowPersonnelMenu =
             $this->hasScouterPermission ||
-            $this->hasChildrenPermission;
+            $this->hasChildrenPermission ||
+            $this->hasRegistrationPermission;
 
         //Attendance
         $this->hasRewardPermission = $user->hasPermission('admin.attendance.reward');
